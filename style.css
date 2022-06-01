@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 18px;
+  width: 100%;
+}
+
+body {
+  background-color: #fff;
+  color: rgb(2, 2, 2);
+  width: 100%;
+}
