@@ -1,133 +1,61 @@
-const books = [];
+let books = localStorage.getItem('books') === null || localStorage.getItem('books') === undefined ? [] : JSON.parse(localStorage.getItem('books'));
 
-const addBook = (ev) => {
-  ev.preventDefault();
-  const book = {
-    title: document.getElementById('title').value,
-    author: document.getElementById('author').value,
-  };
-  books.push(book);
-  document.forms[0].reset();
-};
+const submitbtn = document.getElementById('submit');
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btnAdd').addEventListener('click', addBook);
-});
-
-for (let i = 0; i < books.length; i += 1) {
-  document.getElementById('booksList').innerHTML = books[i].title;
+function Mybooks() {
+  if (books && books.length >= 0) {
+    const section = document.querySelector('.books');
+    section.innerHTML = '';
+    books.forEach((book) => {
+      const author = document.createElement('p');
+      const title = document.createElement('p');
+      const btn = document.createElement('button');
+      btn.innerHTML = 'Remove';
+      const hr = document.createElement('hr');
+      title.innerHTML = book.title;
+      author.innerHTML = `by ${book.author}`;
+      btn.setAttribute('id', book.id);
+      btn.setAttribute('class', 'remove-btn');
+      btn.setAttribute('onclick', `removeme(${book.id});`);
+      section.appendChild(title);
+      section.appendChild(author);
+      section.appendChild(btn);
+      section.appendChild(hr);
+    });
+  }
 }
 
-
-localStorage.setItem('fullName', 'Paquita Salas');
-localStorage.setItem('age', 50);
-
-let name = localStorage.getItem('fullName');
-let age = localStorage.getItem('age');
- 
-console.log(name, age); // Paquita Salas 50
-
-console.log('holaallllllllllll');
-console.log(books);
-
-console.log(books[0]);
-
-console.log('ddddddddddddll');
-
-
-
-/* FROM HERE ARRAY WITH BANDS FOR PROJECT */
-/*
-const concerts = [
-  {
-    band: 'Fugados Band',
-    category: 'Pure rock and roll band',
-    description: 'Concert of best rock and roll band of Venezuela, to be held at
-    Main Arena at prime time on July 16th. Concert will be curated for future video
-     to be broadcasted via Youtube Live.',
-    image: 'images/fugados10.jpeg',
-  },
-  {
-    band: 'Fugados Indie Rock Band',
-    category: 'Pure indie rock style band',
-    description: 'Concert of best indie rock band of Venezuela, to be held at
-    Main Arena at prime time, on July 15th. Concert will be curated for future
-    video to be broadcasted via Youtube Live.',
-    image: 'images/fugados11.jpg',
-  },
-  {
-    band: 'Fugados Soul Rock Band',
-    category: 'Pure soul rock and roll band',
-    description: 'The concert of the award winning soul rock band of America, to be
-    held at Main Arena at prime time on July 17th. Concert will be curated for
-    future video to be broadcasted via Youtube Live.',
-    image: 'images/fugados12.jpg',
-  },
-  {
-    band: 'Fugados Electric Wave Band',
-    category: 'Pure Electric Wave rock and roll band',
-    description: 'Concert of best Electric Wave rock band of Venezuela, to be held
-    at the Gold Arena in prime time. Concert will be broadcasted alive via
-    Youtube Live and funds will contribute to a humanitarian cause.',
-    image: 'images/fugados13.jpg',
-  },
-  {
-    band: 'Arepa y Sushi Band',
-    category: 'Venezuelan tipical music band with Japanese artist included',
-    description: 'The aclaimed and world famouse Venezuelan music band that has
-     conquered Asia and set the standard for ecnit music in Japan. Concert
-     to be held before Main Arena event on July 15th.',
-    image: 'images/arepaysushi2.png',
-  },
-  {
-    band: 'Universidad Gaitera',
-    category: 'Tipical gaita band from Venezuela, founded in 1983 in Puerto
-     La Cruz, Anzoategui, Venezuela',
-    description: 'Concert of the famouse Universidad Gaitera Band, to be held
-     before main event at Gold Arena on July 17th.',
-    image: 'images/universidad.jpeg',
-  },
-];
-
-/* FROM HERE CODE TO INJECT FEATURED BANDS FOR CAPSTONE PROJECT */
-/*
-let listBands = '';
-
-for (let i = 0; i < concerts.length; i += 1) {
-  // eslint-disable-next-line no-unused-vars
-  listBands += `<div class="band-box">
-  <div class="band-image">
-    <div class="band-image-background"></div>
-    <img src="${concerts[i].image}" title="${concerts[i].band}" alt="${concerts[i].band}" />
-  </div>
-    <div class="band-info">
-      <div class="band-head">
-        <h4>${concerts[i].band}</h4>
-        <p class="category">${concerts[i].category}</p>
-        <p class="description">${concerts[i].description}</p>
-      </div>
-    </div>
-  </div>`;
-
-  document.getElementById('list-bands').innerHTML = listBands;
+function addbook(title, author) {
+  if (title.length < 2 && author.length < 1) {
+    const message = document.getElementById('message');
+    message.innerHTML = 'Please, type title and author before click "Add" button';
+  } else {
+    const book = {
+      id: books && books.length > 0 ? books[books.length - 1].id + 1 : 1,
+      title,
+      author,
+    };
+    books.push(book);
+    localStorage.setItem('books', JSON.stringify(books));
+    Mybooks();
+  }
 }
 
-/* FROM HERE CODE TO OPEN AND CLOSE MOBILE MENU FOR CAPSTONE PROJECT */
-/*
-const mobileMenuButtonOpen = document.querySelector('.mobile-menu-open');
-const mobileMenuButtonClose = document.querySelector('.mobile-menu-close');
-const mobileMenu = document.querySelector('nav');
-
-mobileMenuButtonOpen.addEventListener('click', () => {
-  mobileMenuButtonOpen.style.opacity = 0;
-  mobileMenu.classList.remove('nav-initial');
-  mobileMenu.classList.add('nav-active');
+submitbtn.addEventListener('click', () => {
+  const title = document.getElementById('input-title');
+  const author = document.getElementById('input-author');
+  const titleIpnut = title.value;
+  const authorIpnut = author.value;
+  addbook(titleIpnut, authorIpnut);
+  author.value = '';
+  title.value = '';
 });
 
-mobileMenuButtonClose.addEventListener('click', () => {
-  mobileMenu.classList.remove('nav-active');
-  mobileMenu.classList.add('nav-initial');
-  mobileMenuButtonOpen.style.opacity = 1;
-});
+function removeme(id) {
+  books = books.filter((book) => book.id !== Number(id));
+  localStorage.setItem('books', JSON.stringify(books));
+  Mybooks();
+}
 
-*/
+removeme();
+Mybooks();
