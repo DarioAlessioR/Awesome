@@ -28,7 +28,7 @@ function Mybooks() {
 function addbook(title, author) {
   if (title.length < 2 && author.length < 1) {
     const message = document.getElementById('message');
-    message.innerHTML = 'Please, type title and author before click "Add" button';
+    message.innerHTML = 'Please, input title and author before click "Add" button';
   } else {
     const book = {
       id: books && books.length > 0 ? books[books.length - 1].id + 1 : 1,
